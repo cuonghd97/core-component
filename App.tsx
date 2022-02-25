@@ -1,66 +1,85 @@
-import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, SectionList, StatusBar } from "react-native";
+import React, { useState } from 'react';
+import { Button, Platform, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
 
-const DATA = [
-  {
-    title: "Main dishes",
-    data: ["Pizza", "Burger", "Risotto"]
-  },
-  {
-    title: "Sides",
-    data: ["French Fries", "Onion Rings", "Fried Shrimps"]
-  },
-  {
-    title: "Drinks",
-    data: ["Water", "Coke", "Beer"]
-  },
-  {
-    title: "Desserts",
-    data: ["Cheese Cake", "Ice Cream"]
-  }
-];
+const STYLES = ['default', 'dark-content', 'light-content'];
+const TRANSITIONS = ['fade', 'slide', 'none'];
 
-interface Props {
-    title: string
-}
+const App = () => {
+  const [hidden, setHidden] = useState(false);
+  const [statusBarStyle, setStatusBarStyle] = useState(STYLES[0]);
+  const [statusBarTransition, setStatusBarTransition] = useState(TRANSITIONS[0]);
 
-const Item: React.FC<Props> = ({ title }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </View>
-);
+  const changeStatusBarVisibility = () => setHidden(!hidden);
 
-const App = () => (
-  <SafeAreaView style={styles.container}>
-    <SectionList
-      sections={DATA}
-      keyExtractor={(item, index) => item + index}
-      renderItem={({ item }) => <Item title={item} />}
-      renderSectionHeader={({ section: { title } }) => (
-        <Text style={styles.header}>{title}</Text>
-      )}
-      inverted={false}
-    />
-  </SafeAreaView>
-);
+  const changeStatusBarStyle = () => {
+    const styleId = STYLES.indexOf(statusBarStyle) + 1;
+    if (styleId === STYLES.length) {
+      setStatusBarStyle(STYLES[0]);
+    } else {
+      setStatusBarStyle(STYLES[styleId]);
+    }
+  };
+
+  const changeStatusBarTransition = () => {
+    const transition = TRANSITIONS.indexOf(statusBarTransition) + 1;
+    if (transition === TRANSITIONS.length) {
+      setStatusBarTransition(TRANSITIONS[0]);
+    } else {
+      setStatusBarTransition(TRANSITIONS[transition]);
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar
+        animated={true}
+        backgroundColor="#61dafb"
+        barStyle={statusBarStyle}
+        showHideTransition={statusBarTransition}
+        hidden={hidden} />
+      <Text style={styles.textStyle}>
+        StatusBar Visibility:{'\n'}
+        {hidden ? 'Hidden' : 'Visible'}
+      </Text>
+      <Text style={styles.textStyle}>
+        StatusBar Style:{'\n'}
+        {statusBarStyle}
+      </Text>
+      {Platform.OS === 'ios' ? (
+        <Text style={styles.textStyle}>
+          StatusBar Transition:{'\n'}
+          {statusBarTransition}
+        </Text>
+      ) : null}
+      <View style={styles.buttonsContainer}>
+        <Button
+          title="Toggle StatusBar"
+          onPress={changeStatusBarVisibility} />
+        <Button
+          title="Change StatusBar Style"
+          onPress={changeStatusBarStyle} />
+        {Platform.OS === 'ios' ? (
+          <Button
+            title="Change StatusBar Transition"
+            onPress={changeStatusBarTransition} />
+        ) : null}
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
-    marginHorizontal: 16
+    justifyContent: 'center',
+    backgroundColor: '#ECF0F1'
   },
-  item: {
-    backgroundColor: "#f9c2ff",
-    padding: 20,
-    marginVertical: 8
+  buttonsContainer: {
+    padding: 10
   },
-  header: {
-    fontSize: 32,
-    backgroundColor: "#fff"
-  },
-  title: {
-    fontSize: 24
+  textStyle: {
+    textAlign: 'center',
+    marginBottom: 8
   }
 });
 
