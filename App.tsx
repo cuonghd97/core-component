@@ -1,32 +1,51 @@
 import React, { useState } from 'react';
-import { Button, Platform, SafeAreaView, StatusBar, StyleSheet, Switch, Text, View } from 'react-native';
+import { Button, Platform, SafeAreaView, StatusBar, StyleSheet, Switch, Text, View, TouchableHighlight } from 'react-native';
 
+
+const TouchableHightlightExample = () => {
+    const [count, setCount] = useState(0)
+    const onPress =     () => setCount(count+1)
+    return (
+        <View style={styles.container}>
+            <TouchableHighlight  onPress={onPress} activeOpacity={0.5} underlayColor={"#ffebcd"}>
+                <View style={styles.button}>
+                    <Text>Touch Here</Text>
+                </View>
+            </TouchableHighlight>
+            <View style={styles.countContainer}>
+                <Text style={styles.countText}>
+                    {count||null}
+                </Text>
+            </View>
+        </View>
+    )
+}
 
 const App = () => {
-    const [isEnabled, setIsEnabled] = useState(false)
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState)
 
   return (
-    <View style={styles.container}>
-        <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-        >
-            
-        </Switch>
-    </View>
+    <TouchableHightlightExample/>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center"
-    }
-  });
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 10
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10
+  },
+  countContainer: {
+    alignItems: "center",
+    padding: 10
+  },
+  countText: {
+    color: "#FF00FF"
+  }
+});
 
 export default App;
